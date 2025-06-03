@@ -22,6 +22,16 @@ namespace MicroelectronicsWarehouse.Repositories
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
             => await _dbSet.Where(predicate).ToListAsync();
 
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
+
+
         public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
 
         public void Remove(T entity) => _dbSet.Remove(entity);

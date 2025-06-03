@@ -8,6 +8,8 @@ namespace MicroelectronicsWarehouse.Repositories
         Task<T?> GetByIdAsync(int id);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
         Task AddAsync(T entity);
+        Task DeleteAsync(int id);
+
         void Remove(T entity);
         void Update(T entity);
     }
