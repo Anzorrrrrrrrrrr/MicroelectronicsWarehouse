@@ -4,6 +4,9 @@ using MicroelectronicsWarehouse.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MicroelectronicsWarehouse.Services;
 using MicroelectronicsWarehouse.Services.Interfaces;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MicroelectronicsWarehouse.Validators;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +25,12 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryDtoValidator>();
+builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddValidatorsFromAssemblyContaining<ComponentDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SupplierDtoValidator>();
 
 
 var app = builder.Build();

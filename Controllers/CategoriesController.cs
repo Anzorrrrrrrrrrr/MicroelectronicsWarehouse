@@ -58,5 +58,23 @@ namespace MicroelectronicsWarehouse.Controllers
             await _categoryService.DeleteAsync(id);
             return NoContent();
         }
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] RequestParams requestParams)
+        {
+            var result = await _categoryService.GetAllAsync(requestParams);
+            return Ok(result);
+        }
+
     }
 }

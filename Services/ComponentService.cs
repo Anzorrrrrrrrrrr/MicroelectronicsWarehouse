@@ -1,60 +1,38 @@
-﻿using MicroelectronicsWarehouse.DTOs;
+﻿using AutoMapper;
+using MicroelectronicsWarehouse.DTOs;
 using MicroelectronicsWarehouse.Entities;
 using MicroelectronicsWarehouse.Repositories.Interfaces;
 using MicroelectronicsWarehouse.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace MicroelectronicsWarehouse.Services
 {
     public class ComponentService : IComponentService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ComponentService(IUnitOfWork unitOfWork)
+        public ComponentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<ComponentDto>> GetAllAsync()
         {
             var components = await _unitOfWork.Components.GetAllAsync();
-            return components.Select(c => new ComponentDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Quantity = c.Quantity,
-                CategoryId = c.CategoryId,
-                SupplierId = c.SupplierId
-            });
+            return _mapper.Map<IEnumerable<ComponentDto>>(components);
         }
 
         public async Task<ComponentDto?> GetByIdAsync(int id)
         {
             var c = await _unitOfWork.Components.GetByIdAsync(id);
-            if (c == null) return null;
-
-            return new ComponentDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                Quantity = c.Quantity,
-                CategoryId = c.CategoryId,
-                SupplierId = c.SupplierId
-            };
+            return c == null ? null : _mapper.Map<ComponentDto>(c);
         }
 
         public async Task AddAsync(ComponentDto dto)
         {
-            var component = new Component
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                Quantity = dto.Quantity,
-                CategoryId = dto.CategoryId,
-                SupplierId = dto.SupplierId
-            };
-
+            var component = _mapper.Map<Component>(dto);
             await _unitOfWork.Components.AddAsync(component);
             await _unitOfWork.CompleteAsync();
         }
@@ -64,12 +42,7 @@ namespace MicroelectronicsWarehouse.Services
             var component = await _unitOfWork.Components.GetByIdAsync(dto.Id);
             if (component == null) return;
 
-            component.Name = dto.Name;
-            component.Description = dto.Description;
-            component.Quantity = dto.Quantity;
-            component.CategoryId = dto.CategoryId;
-            component.SupplierId = dto.SupplierId;
-
+            _mapper.Map(dto, component);
             _unitOfWork.Components.Update(component);
             await _unitOfWork.CompleteAsync();
         }
@@ -81,6 +54,29 @@ namespace MicroelectronicsWarehouse.Services
 
             _unitOfWork.Components.Remove(component);
             await _unitOfWork.CompleteAsync();
+        }
+
+        public async Task<IEnumerable<ComponentDto>> GetAllAsync(RequestParams requestParams)
+        {
+            var query = _unitOfWork.Components.GetAll(); // IQueryable<Component>
+
+            // 14. Фільтрація
+            if (!string.IsNullOrWhiteSpace(requestParams.SearchTerm))
+                query = query.Where(c => c.Name.Contains(requestParams.SearchTerm));
+
+            // 15. Сортування
+            if (requestParams.SortBy?.ToLower() == "name")
+                query = query.OrderBy(c => c.Name);
+            else if (requestParams.SortBy?.ToLower() == "quantity")
+                query = query.OrderByDescending(c => c.Quantity);
+
+            // 13. Пагінація
+            var paged = await query
+                .Skip((requestParams.PageNumber - 1) * requestParams.PageSize)
+                .Take(requestParams.PageSize)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<ComponentDto>>(paged);
         }
     }
 }

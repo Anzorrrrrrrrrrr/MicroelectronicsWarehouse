@@ -9,5 +9,8 @@ namespace MicroelectronicsWarehouse.Services.Interfaces
         Task AddAsync(SupplierDto dto);
         Task UpdateAsync(SupplierDto dto);
         Task DeleteAsync(int id);
+
+        Task<IEnumerable<SupplierDto>> GetAllAsync(RequestParams requestParams);
+
     }
 }

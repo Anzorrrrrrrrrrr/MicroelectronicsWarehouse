@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MicroelectronicsWarehouse.DTOs;
 using MicroelectronicsWarehouse.Services.Interfaces;
+using MicroelectronicsWarehouse.Services;
+
 
 namespace MicroelectronicsWarehouse.Controllers
 {
@@ -57,6 +59,14 @@ namespace MicroelectronicsWarehouse.Controllers
 
             await _componentService.DeleteAsync(id);
             return NoContent();
+
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged([FromQuery] RequestParams requestParams)
+        {
+            var components = await _componentService.GetAllAsync(requestParams);
+            return Ok(components);
         }
     }
 }

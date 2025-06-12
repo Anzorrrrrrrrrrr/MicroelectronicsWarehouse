@@ -37,5 +37,11 @@ namespace MicroelectronicsWarehouse.Repositories
         public void Remove(T entity) => _dbSet.Remove(entity);
 
         public void Update(T entity) => _dbSet.Update(entity);
+
+
+
+
+        public IQueryable<T> GetAll() => _dbSet.AsQueryable();
+
     }
 }

@@ -12,5 +12,9 @@ namespace MicroelectronicsWarehouse.Repositories
 
         void Remove(T entity);
         void Update(T entity);
+
+
+        IQueryable<T> GetAll();
+
     }
 }

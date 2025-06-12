@@ -22,6 +22,13 @@ namespace MicroelectronicsWarehouse.Controllers
             return Ok(suppliers); // 200 OK
         }
 
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged([FromQuery] RequestParams requestParams)
+        {
+            var suppliers = await _supplierService.GetAllAsync(requestParams);
+            return Ok(suppliers);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
