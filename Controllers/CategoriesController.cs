@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MicroelectronicsWarehouse.DTOs;
 using MicroelectronicsWarehouse.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicroelectronicsWarehouse.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
@@ -22,6 +24,13 @@ namespace MicroelectronicsWarehouse.Controllers
             return Ok(categories);
         }
 
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged([FromQuery] RequestParams requestParams)
+        {
+            var result = await _categoryService.GetAllAsync(requestParams);
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -31,6 +40,7 @@ namespace MicroelectronicsWarehouse.Controllers
         }
 
         [HttpPost]
+        [Authorize] 
         public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
             await _categoryService.AddAsync(dto);
@@ -38,6 +48,7 @@ namespace MicroelectronicsWarehouse.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize] 
         public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
         {
             if (id != dto.Id) return BadRequest();
@@ -50,6 +61,7 @@ namespace MicroelectronicsWarehouse.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize] 
         public async Task<IActionResult> Delete(int id)
         {
             var existing = await _categoryService.GetByIdAsync(id);
@@ -58,23 +70,5 @@ namespace MicroelectronicsWarehouse.Controllers
             await _categoryService.DeleteAsync(id);
             return NoContent();
         }
-
-
-
-
-
-
-
-
-
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] RequestParams requestParams)
-        {
-            var result = await _categoryService.GetAllAsync(requestParams);
-            return Ok(result);
-        }
-
     }
 }

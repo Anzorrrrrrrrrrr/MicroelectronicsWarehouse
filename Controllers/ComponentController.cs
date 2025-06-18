@@ -2,10 +2,12 @@
 using MicroelectronicsWarehouse.DTOs;
 using MicroelectronicsWarehouse.Services.Interfaces;
 using MicroelectronicsWarehouse.Services;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace MicroelectronicsWarehouse.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ComponentsController : ControllerBase

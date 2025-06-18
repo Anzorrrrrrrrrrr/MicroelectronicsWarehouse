@@ -2,10 +2,12 @@
 using MicroelectronicsWarehouse.Entities;
 using MicroelectronicsWarehouse.Configurations;
 using MicroelectronicsWarehouse.Seed;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 
 namespace MicroelectronicsWarehouse.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -20,6 +22,7 @@ namespace MicroelectronicsWarehouse.Data
             modelBuilder.ApplyConfiguration(new ComponentConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
+            base.OnModelCreating(modelBuilder);
             AppDbInitializer.Seed(modelBuilder);
 
         }

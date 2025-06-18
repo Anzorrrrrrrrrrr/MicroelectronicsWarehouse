@@ -10,7 +10,7 @@ namespace MicroelectronicsWarehouse.Mapping
         {
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Component, ComponentDto>().ReverseMap();
-
+            CreateMap<Supplier, SupplierDto>().ReverseMap();
         }
     }
 }
