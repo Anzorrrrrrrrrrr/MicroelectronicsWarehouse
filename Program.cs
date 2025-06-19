@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using MicroelectronicsWarehouse.Entities;
+using MicroelectronicsWarehouse.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,11 +119,15 @@ builder.Services.AddAuthorization();
 // App pipeline
 var app = builder.Build();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseStatusCodePages(); // Показує текст помилок (401, 403, 404)
 

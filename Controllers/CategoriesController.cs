@@ -17,6 +17,12 @@ namespace MicroelectronicsWarehouse.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet("error-test")]
+        public IActionResult ThrowError()
+        {
+            throw new Exception("Тестова помилка");
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
